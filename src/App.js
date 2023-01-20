@@ -37,14 +37,14 @@ const barChartCountry = (gridApi) => {
   gridApi.createCrossFilterChart({
     chartType: "column",
     cellRange: {
-      columns: ["country", "total"],
+      columns: ["CATEGORY", "DURATION"],
     },
     aggFunc: "sum",
     chartThemeOverrides: {
       common: {
         title: {
           enabled: true,
-          text: "Total by country",
+          text: "Total Minutes by Category",
         },
         legend: {
           enabled: false,
@@ -56,11 +56,11 @@ const barChartCountry = (gridApi) => {
             },
           },
           number: {
-            label: {
+            /*    label: {
               formatter: (params) => {
                 return params.value / 1000 + "k";
               },
-            },
+            }, */
           },
         },
       },
@@ -69,11 +69,11 @@ const barChartCountry = (gridApi) => {
   });
 };
 
-const pieChartRef = (gridApi) => {
+const pieChartCategoriesRef = (gridApi) => {
   gridApi.createCrossFilterChart({
-    chartType: "pie",
+    chartType: "doughnut",
     cellRange: {
-      columns: ["sport", "age"],
+      columns: ["CATEGORY", "DURATION"],
     },
     aggFunc: "sum",
 
@@ -87,23 +87,66 @@ const pieChartRef = (gridApi) => {
         series: {
           title: {
             enabled: true,
-            text: "Sports by Age",
+            text: "Categories by Total Minutes Duration",
           },
           calloutLabel: {
             enabled: true,
           },
+          number: {
+            label: {
+              formatter: (params) => {
+                return params.value + "GGG";
+              },
+            },
+          },
         },
       },
     },
-    chartContainer: document.querySelector("#pieChart"),
+    chartContainer: document.querySelector("#pieChartCategories"),
+  });
+};
+const pieChartGenresRef = (gridApi) => {
+  gridApi.createCrossFilterChart({
+    chartType: "doughnut",
+    cellRange: {
+      columns: ["GENRES", "PROGRAMID"],
+    },
+    aggFunc: "count",
+
+    chartThemeOverrides: {
+      column: {
+        legend: {
+          position: "bottom",
+        },
+      },
+      pie: {
+        series: {
+          title: {
+            enabled: true,
+            text: "Categories by Total Minutes Duration",
+          },
+          calloutLabel: {
+            enabled: true,
+          },
+          number: {
+            label: {
+              formatter: (params) => {
+                return params.value + "GGG";
+              },
+            },
+          },
+        },
+      },
+    },
+    chartContainer: document.querySelector("#pieChartGenres"),
   });
 };
 
 const histChartYear = (gridApi) => {
   gridApi.createCrossFilterChart({
-    chartType: "bar",
+    chartType: "line",
     cellRange: {
-      columns: ["year", "total"],
+      columns: ["ActiveDates", "PROGRAMID"],
     },
     aggFunc: "count",
     chartThemeOverrides: {
@@ -131,12 +174,24 @@ const App = () => {
     };
   }, []);
   const [columnDefs, setColumnDefs] = useState([
-    { field: "athlete", width: 150, chartDataType: "category" },
-    { field: "age", chartDataType: "series" },
+    {
+      field: "SCHEDULE",
+      width: 150,
+      chartDataType: "category",
+    },
+    { field: "CATEGORY", width: 150, chartDataType: "category" },
+    { field: "GENRES", width: 150, chartDataType: "category" },
+    { field: "PROGRAMID", width: 150, chartDataType: "series" },
+
+    { field: "COUNTRYOFORIGIN", width: 150, chartDataType: "category" },
+    { field: "DURATION", width: 150, chartDataType: "series" },
+    { field: "ActiveDates", chartDataType: "series" },
+
+    /* { field: "age", chartDataType: "series" },
     { field: "sport", width: 150, chartDataType: "category" },
     { field: "year", width: 150, chartDataType: "category" },
     { field: "country", width: 150, chartDataType: "category" },
-    { field: "total", width: 150, chartDataType: "series" },
+    { field: "total", width: 150, chartDataType: "series" }, */
   ]);
 
   // DefaultColDef sets props common to all Columns
@@ -147,11 +202,12 @@ const App = () => {
       filter: "agSetColumnFilter",
       floatingFilter: true,
       resizable: true,
+      enableRowGroup: true,
     };
   }, []);
 
   const onGridReady = useCallback((params) => {
-    fetch("https://www.ag-grid.com/example-assets/wide-spread-of-sports.json")
+    fetch("/ondemand-processed.json")
       .then((resp) => resp.json())
       .then((data) => {
         setRowData(data);
@@ -159,8 +215,9 @@ const App = () => {
   }, []);
   const onFirstDataRendered = useCallback((params) => {
     barChartCountry(params.api);
-    pieChartRef(params.api);
-    histChartYear(params.api);
+    pieChartCategoriesRef(params.api);
+    pieChartGenresRef(params.api);
+    //histChartYear(params.api);
   }, []);
   const sideBar = {
     toolPanels: [
@@ -213,11 +270,12 @@ const App = () => {
           onFirstDataRendered={onFirstDataRendered}
         />
       </div>
-
-      <div id="pieChart" className="ag-theme-alpine"></div>
-
-      <div id="barChart" className="ag-theme-alpine"></div>
-      <div id="columnChart" className="ag-theme-alpine"></div>
+      <div id="charts">
+        <div id="pieChartCategories" className="ag-theme-alpine pieChart"></div>
+        <div id="pieChartGenres" className="ag-theme-alpine pieChart"></div>
+        <div id="barChart" className="ag-theme-alpine"></div>
+        <div id="columnChart" className="ag-theme-alpine"></div>
+      </div>
     </div>
   );
 };

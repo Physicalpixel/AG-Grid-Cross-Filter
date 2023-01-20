@@ -1,0 +1,52 @@
+{
+  "name": "gridviz",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@ag-grid-community/client-side-row-model": "^29.0.0",
+    "@ag-grid-community/core": "^29.0.0",
+    "@ag-grid-enterprise/charts": "^29.0.0",
+    "@ag-grid-enterprise/filter-tool-panel": "^29.0.0",
+    "@ag-grid-enterprise/menu": "^29.0.0",
+    "@ag-grid-enterprise/multi-filter": "^29.0.0",
+    "@ag-grid-enterprise/row-grouping": "^29.0.0",
+    "@ag-grid-enterprise/set-filter": "^29.0.0",
+    "@testing-library/jest-dom": "^5.16.5",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^13.5.0",
+    "ag-grid-community": "^29.0.0",
+    "ag-grid-enterprise": "^29.0.0",
+    "ag-grid-react": "^29.0.0",
+    "env-cmd": "^10.1.0",
+    "git-filter-repo": "^0.0.30",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-scripts": "5.0.1",
+    "web-vitals": "^2.1.4"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "start:dev": "env-cmd -f .env.lic react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}

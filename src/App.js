@@ -128,7 +128,7 @@ const App = () => {
     {
       field: "GENRES",
       aggFunc: "count",
-      enablerowGroup: true,
+      enableRowGroup: true,
       rowGroup: true,
       width: 150,
       chartDataType: "series",
@@ -137,7 +137,7 @@ const App = () => {
     {
       field: "OFFERS",
       aggFunc: "count",
-      enablerowGroup: true,
+      enableRowGroup: true,
       rowGroup: true,
       width: 150,
       chartDataType: "series",

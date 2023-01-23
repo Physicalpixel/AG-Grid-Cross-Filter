@@ -37,14 +37,14 @@ const barChartCountry = (gridApi) => {
   gridApi.createCrossFilterChart({
     chartType: "column",
     cellRange: {
-      columns: ["country", "total"],
+      columns: ["PLATFORMS", "GENRES"],
     },
-    aggFunc: "sum",
+    aggFunc: "count",
     chartThemeOverrides: {
       common: {
         title: {
           enabled: true,
-          text: "Total by country",
+          //text: "SCHEDULES BY GENRE",
         },
         legend: {
           enabled: false,
@@ -55,13 +55,7 @@ const barChartCountry = (gridApi) => {
               rotation: 0,
             },
           },
-          number: {
-            label: {
-              formatter: (params) => {
-                return params.value / 1000 + "k";
-              },
-            },
-          },
+          number: {},
         },
       },
     },
@@ -73,9 +67,9 @@ const pieChartRef = (gridApi) => {
   gridApi.createCrossFilterChart({
     chartType: "pie",
     cellRange: {
-      columns: ["sport", "age"],
+      columns: ["PLATFORMS", "OFFERS"],
     },
-    aggFunc: "sum",
+    aggFunc: "count",
 
     chartThemeOverrides: {
       column: {
@@ -87,7 +81,7 @@ const pieChartRef = (gridApi) => {
         series: {
           title: {
             enabled: true,
-            text: "Sports by Age",
+            //text: "SCHEDULES BY GENRE",
           },
           calloutLabel: {
             enabled: true,
@@ -99,27 +93,27 @@ const pieChartRef = (gridApi) => {
   });
 };
 
-const histChartYear = (gridApi) => {
-  gridApi.createCrossFilterChart({
-    chartType: "bar",
-    cellRange: {
-      columns: ["year", "total"],
-    },
-    aggFunc: "count",
-    chartThemeOverrides: {
-      common: {
-        title: {
-          enabled: true,
-          text: "Total by year",
-        },
-        legend: {
-          enabled: false,
-        },
-      },
-    },
-    chartContainer: document.querySelector("#barChart"),
-  });
-};
+// const histChartYear = (gridApi) => {
+//   gridApi.createCrossFilterChart({
+//     chartType: "bar",
+//     cellRange: {
+//       columns: ["year", "total"],
+//     },
+//     aggFunc: "count",
+//     chartThemeOverrides: {
+//       common: {
+//         title: {
+//           enabled: true,
+//           text: "Total by year",
+//         },
+//         legend: {
+//           enabled: false,
+//         },
+//       },
+//     },
+//     chartContainer: document.querySelector("#barChart"),
+//   });
+// };
 
 const App = () => {
   const gridRef = useRef();
@@ -131,12 +125,30 @@ const App = () => {
     };
   }, []);
   const [columnDefs, setColumnDefs] = useState([
-    { field: "athlete", width: 150, chartDataType: "category" },
-    { field: "age", chartDataType: "series" },
-    { field: "sport", width: 150, chartDataType: "category" },
-    { field: "year", width: 150, chartDataType: "category" },
-    { field: "country", width: 150, chartDataType: "category" },
-    { field: "total", width: 150, chartDataType: "series" },
+    {
+      field: "GENRES",
+      aggFunc: "count",
+      enablerowGroup: true,
+      rowGroup: true,
+      width: 150,
+      chartDataType: "series",
+    },
+    { field: "SCHEDULE", chartDataType: "category" },
+    {
+      field: "OFFERS",
+      aggFunc: "count",
+      enablerowGroup: true,
+      rowGroup: true,
+      width: 150,
+      chartDataType: "series",
+    },
+    {
+      field: "PLATFORMS",
+      width: 150,
+      chartDataType: "category",
+    },
+    { field: "CATEGORY", width: 150, chartDataType: "category" },
+    { field: "DURATION", width: 150, chartDataType: "series" },
   ]);
 
   // DefaultColDef sets props common to all Columns
@@ -151,16 +163,20 @@ const App = () => {
   }, []);
 
   const onGridReady = useCallback((params) => {
-    fetch("https://www.ag-grid.com/example-assets/wide-spread-of-sports.json")
+    fetch("ondemand.json")
       .then((resp) => resp.json())
       .then((data) => {
-        setRowData(data);
+        var withGenreOnly = data.analysis.filter(function (entry) {
+          return entry.GENRES !== undefined && entry.CATEGORY !== undefined;
+        });
+        console.log(withGenreOnly);
+        setRowData(withGenreOnly);
       });
   }, []);
   const onFirstDataRendered = useCallback((params) => {
     barChartCountry(params.api);
     pieChartRef(params.api);
-    histChartYear(params.api);
+    //histChartYear(params.api);
   }, []);
   const sideBar = {
     toolPanels: [

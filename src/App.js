@@ -37,7 +37,7 @@ const barChartCountry = (gridApi) => {
   gridApi.createCrossFilterChart({
     chartType: "column",
     cellRange: {
-      columns: ["PLATFORMS", "GENRES"],
+      columns: ["ATTRIBUTES", "GENRES"],
     },
     aggFunc: "count",
     chartThemeOverrides: {
@@ -67,7 +67,7 @@ const pieChartRef = (gridApi) => {
   gridApi.createCrossFilterChart({
     chartType: "pie",
     cellRange: {
-      columns: ["PLATFORMS", "OFFERS"],
+      columns: ["ATTRIBUTES", "OFFERS"],
     },
     aggFunc: "count",
 
@@ -125,30 +125,32 @@ const App = () => {
     };
   }, []);
   const [columnDefs, setColumnDefs] = useState([
+    { field: "STARTDATE" },
+    { field: "ENDDATE" },
+    { field: "PROGRAMID" },
+    { field: "PREMIERE" },
+    { field: "PROGRAMTITLE", chartType: "series" },
+    { field: "CATEGORY", chartType: "category" },
+    { field: "EPISODETITLE" },
+    { field: "DURATION" },
     {
       field: "GENRES",
       aggFunc: "count",
-      enablerowGroup: true,
-      rowGroup: true,
       width: 150,
       chartDataType: "series",
     },
-    { field: "SCHEDULE", chartDataType: "category" },
     {
       field: "OFFERS",
       aggFunc: "count",
-      enablerowGroup: true,
-      rowGroup: true,
       width: 150,
       chartDataType: "series",
     },
-    {
-      field: "PLATFORMS",
-      width: 150,
-      chartDataType: "category",
-    },
-    { field: "CATEGORY", width: 150, chartDataType: "category" },
-    { field: "DURATION", width: 150, chartDataType: "series" },
+    { field: "ATTRIBUTES", chartType: "category" },
+    { field: "PLATFORMS", chartType: "category" },
+    { field: "AGE" },
+    { field: "EVENTDURATION", chartType: "series" },
+    { field: "isPremiere" },
+    { field: "ActiveDates" },
   ]);
 
   // DefaultColDef sets props common to all Columns
@@ -163,14 +165,10 @@ const App = () => {
   }, []);
 
   const onGridReady = useCallback((params) => {
-    fetch("ondemand.json")
+    fetch("newData.json")
       .then((resp) => resp.json())
       .then((data) => {
-        var withGenreOnly = data.analysis.filter(function (entry) {
-          return entry.GENRES !== undefined && entry.CATEGORY !== undefined;
-        });
-        console.log(withGenreOnly);
-        setRowData(withGenreOnly);
+        setRowData(data);
       });
   }, []);
   const onFirstDataRendered = useCallback((params) => {
